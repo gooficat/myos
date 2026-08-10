@@ -4,7 +4,7 @@ SECTIONS {
     . = 1M;
 
     .multiboot2 ALIGN(8) : AT(0) {
-        *(.multiboot2)
+        KEEP(*(.multiboot2))
     }
 
     . = ALIGN(4K);

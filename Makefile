@@ -10,7 +10,7 @@ BIN_DIR := bin
 IMG_DIR := img
 ISO_DIR := iso
 
-CC_FLAGS := -ffreestanding -O0 -I$(INC_DIR)
+CC_FLAGS := -ffreestanding -m64 -mno-red-zone -O0 -I$(INC_DIR)
 AS_FLAGS :=
 LD_FLAGS := -T linker.ld
 
