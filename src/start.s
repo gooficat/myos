@@ -8,14 +8,14 @@
 .section .text
 
 _start:
-	cli
-	mov %ebx, %esi
+	cli # disable interrupts
 
-	lgdt gdt_desc
+	cmp $0x36d76289, %eax # check magic
+	jne halt
 
-	push %esi
-	call setup_paging
-	add $4, %esp
+	mov %ebx, %esi # store pointer to multiboot2 records
+
+	lgdt gdt_desc # load global descriptor table
 
 	mov $pml4, %eax
 	mov %eax, %cr3
@@ -46,6 +46,12 @@ long_mode:
 
 	mov $stack_top, %rsp
 
+	mov %esi, %edi
+	call setup_paging # set up the real tables	
+	mov $pml4, %rax
+	mov %rax, %cr3
+
+
 	call kernel_main
 
 halt:
@@ -65,22 +71,28 @@ gdt_desc:
 	.long gdt
 	.word 0
 
-.section .bss
+.section .data
 
 .align 4096
 .globl pml4
 pml4:
-	.skip 4096
-
+	.quad pdpt + 3
+	.fill 511, 8, 0
 .align 4096
 .globl pdpt
 pdpt:
-	.skip 4096
+	.quad page_tables + 3
+	.fill 511, 8, 0
 
 .align 4096
 .globl page_tables
 page_tables:
-	.skip 4096 * 512
+	.quad 0x83
+	.quad 0x200083
+	.fill 510, 8, 0
+	.skip 4096 * 511
+
+.section .bss
 
 .align 16
 stack:

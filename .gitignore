@@ -1,6 +1,6 @@
-/asm
-/bin
-/img
-/iso
-/inc
-/obj
+asm/
+bin/
+img/
+iso/
+inc/
+obj/
