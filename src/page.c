@@ -49,15 +49,16 @@ void setup_paging(void *multiboot_info)
 	struct multiboot2_tag *tag;
 	u32 i;
 
-	zero_page(pml4);
-	zero_page(pdpt);
-
-	for (i = 0; i < 512; ++i)
+	/* Keep the active identity mappings until the replacement tables are ready. */
+	for (i = 1; i < 512; ++i)
 	{
 		zero_page(page_tables + i * 512);
 	}
 
-	pml4[0] = (u64)pdpt | PAGE_PRESENT | PAGE_WRITE;
+	for (i = 1; i < 512; ++i)
+	{
+		pdpt[i] = 0;
+	}
 
 	map_2m(0);
 	map_2m(0x200000);
