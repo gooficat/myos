@@ -3,7 +3,7 @@ ENTRY(_start)
 SECTIONS {
     . = 1M;
 
-    .multiboot2 ALIGN(8) : AT(0) {
+    .multiboot2 ALIGN(8) : {
         KEEP(*(.multiboot2))
     }
 
