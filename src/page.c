@@ -125,7 +125,7 @@ static void map_2m(u64 addr)
 	u64 pd_idx, pdpt_idx, *pd;
 
 	pd_idx = (addr >> 21) & 0x1FF;
-	pdpt_idx = (addr > 30) & 0x1FF;
+	pdpt_idx = (addr >> 30) & 0x1FF;
 
 	pd = page_tables + pdpt_idx * 512;
 
