@@ -1,6 +1,6 @@
 asm/
 bin/
 img/
-iso/
+iso/**
 inc/
 obj/
