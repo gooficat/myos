@@ -1,12 +1,21 @@
 .code32
 .globl _start
 .type _start, @function
+
+.extern setup_paging
+.extern kernel_main
+
 .section .text
 
 _start:
 	cli
+	mov %ebx, %esi
 
 	lgdt gdt_desc
+
+	push %esi
+	call setup_paging
+	add $4, %esp
 
 	mov $pml4, %eax
 	mov %eax, %cr3
@@ -56,21 +65,22 @@ gdt_desc:
 	.long gdt
 	.word 0
 
-.section .data
-
-.align 4096
-pml4:
-	.quad pdpt + 0x003
-.align 4096
-pdpt:
-	.quad pd + 0x3
-.align 4096
-pd:
-	.quad 0x83
-	.fill 511, 8, 0
-
-
 .section .bss
+
+.align 4096
+.globl pml4
+pml4:
+	.skip 4096
+
+.align 4096
+.globl pdpt
+pdpt:
+	.skip 4096
+
+.align 4096
+.globl page_tables
+page_tables:
+	.skip 4096 * 512
 
 .align 16
 stack:
