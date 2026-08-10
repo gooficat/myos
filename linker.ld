@@ -1,0 +1,35 @@
+ENTRY(_start)
+
+SECTIONS {
+    . = 1M;
+
+    .multiboot2 ALIGN(8) : AT(0) {
+        *(.multiboot2)
+    }
+
+    . = ALIGN(4K);
+    .text ALIGN(4K) : {
+        *(.text)
+    }
+
+    .rodata ALIGN(4K) : {
+        *(.rodata)
+    }
+
+    .data ALIGN(4K) : {
+        *(.data)
+    }
+
+    .bss ALIGN(4K) : {
+        *(.bss)
+        *(COMMON)
+    }
+
+    kernel_end = .;
+
+    /DISCARD/ : {
+        *(.comment)
+        *(.eh_frame)
+        *(.note*)
+    }
+}
