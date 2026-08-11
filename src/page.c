@@ -42,14 +42,12 @@ static void zero_page(void *page);
 extern u64 pml4[], pdpt[], page_tables[];
 
 static void zero_page(void *ptr);
-static void map_2m(u64 addr);
+static void mmap_2m(u64 addr);
 
 void setup_paging(void *multiboot_info)
 {
-	struct multiboot2_tag *tag;
 	u32 i;
 
-	/* Keep the active identity mappings until the replacement tables are ready. */
 	for (i = 1; i < 512; ++i)
 	{
 		zero_page(page_tables + i * 512);
@@ -60,8 +58,8 @@ void setup_paging(void *multiboot_info)
 		pdpt[i] = 0;
 	}
 
-	map_2m(0);
-	map_2m(0x200000);
+	mmap_2m(0);
+	mmap_2m(0x200000);
 
 	i = 8;
 
@@ -99,7 +97,7 @@ void setup_paging(void *multiboot_info)
 
 					while (start < end)
 					{
-						map_2m(start);
+						mmap_2m(start);
 						start += PAGE_2M;
 					}
 				}
@@ -121,7 +119,7 @@ static void zero_page(void *ptr)
 	}
 }
 
-static void map_2m(u64 addr)
+static void mmap_2m(u64 addr)
 {
 	u64 pd_idx, pdpt_idx, *pd;
 
